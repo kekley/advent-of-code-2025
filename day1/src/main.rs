@@ -53,29 +53,18 @@ fn apply_rotation(current_dial_position: u16, rotation: Rotation) -> RotationRes
             } else {
                 left_rotation_amount
             };
+            if left_rotation_amount >= current_dial_position && current_dial_position != 0 {
+                times_zero_passed += 1;
+            }
 
-            if let Some(new_dial_position) = current_dial_position.checked_sub(left_rotation_amount)
-            {
-                if new_dial_position == 0 {
-                    times_zero_passed += 1;
-                }
-                RotationResult {
-                    new_position: new_dial_position,
-                    times_zero_passed,
-                }
-            } else {
-                //if we started at zero, don't increment the counter
-                if current_dial_position != 0 {
-                    times_zero_passed += 1;
-                }
-                //No need to check for zero because we underflowed
-                let new_dial_position =
-                    NUMBER_OF_DIAL_POINTS - (left_rotation_amount - current_dial_position);
+            let equivalent_right_turn = NUMBER_OF_DIAL_POINTS - left_rotation_amount;
 
-                RotationResult {
-                    new_position: new_dial_position,
-                    times_zero_passed,
-                }
+            let new_dial_position =
+                (current_dial_position + equivalent_right_turn) % NUMBER_OF_DIAL_POINTS;
+
+            RotationResult {
+                new_position: new_dial_position,
+                times_zero_passed,
             }
         }
         Rotation::Right(right_rotation_amount) => {
