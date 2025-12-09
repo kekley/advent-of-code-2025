@@ -41,24 +41,28 @@ impl BatteryBank {
 
         //we use .rev() here because max will return the last value it finds that is at least max and we want the first
         //in the array
-        let (index_a, joltage_a) = self
-            .batteries
+        let (index_a, joltage_a) = self.batteries[0..num_batteries - 1]
             .iter()
             .enumerate()
-            .filter(|(i, _)| !i.eq(&(num_batteries - 1)))
             .rev()
             .max_by(|(_, a), (_, b)| a.cmp(b))
             .unwrap();
-        let joltage_b = self
-            .batteries
+        let joltage_b = self.batteries[index_a..]
             .iter()
             .enumerate()
-            .filter(|(i, _)| i.gt(&index_a))
             .map(|(_, b)| b)
             .max()
             .unwrap();
 
         *joltage_a as u64 * 10 + *joltage_b as u64
+    }
+    fn largest_joltage_12_bats(&self) -> u64 {
+        let max = self.batteries.iter().max().copied().unwrap();
+        let candidate_indicies = self
+            .batteries
+            .iter()
+            .enumerate()
+            .filter(|(_, v)| **v == max);
     }
 }
 #[test]
