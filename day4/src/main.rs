@@ -18,6 +18,7 @@ struct Diagram {
 }
 
 impl Diagram {
+    fn part2(&mut self) -> u64 {}
     fn count_removable_paper(&self) -> u64 {
         let mut total = 0;
         for y in 1..self.height + 1 {
